@@ -1,3 +1,27 @@
+
+let max, player1Name, player2Name
+let playBtn = document.getElementById('playBtn')
+let warning = document.getElementById('warning');
+
+playBtn.onclick = (e) => {
+    max = Number(document.getElementById('maxScore').value);
+    player1Name = document.getElementById('player1').value;
+    player2Name = document.getElementById('player2').value;
+    e.preventDefault();
+    if (max < 5 || player1Name.length < 0 || player2Name.length < 0) {
+        warning.style.display = 'block';
+        setTimeout(() => {
+            warning.style.display = 'none';
+        }, 2000)
+    } else {
+        e.preventDefault();
+        e.target.disabled = true
+        setTimeout(() => {
+            requestAnimationFrame(play);
+        }, 1500)
+    }
+}
+
 let canvas = document.getElementById('canvas');
 function Block(x, y, width, height, score) {
     this.x = x;
@@ -24,7 +48,7 @@ let ball = new Ball(400, 200, 10, 0, 9 * Math.PI, []);
 let speed = 15;
 let starter = Math.floor((Math.random() * 2) + 1);
 let rtol = '', ttob = '';
-let gameFlow, winner;
+let gameFlow;
 
 //*-------- Define who is starting --------->
 starter === 1 ? ball.x = player1.x + 15 : ball.x = player2.x - 11
@@ -99,7 +123,7 @@ function play() {
                 //Todo: reset ball position
                 player2.score += 15;
                 ball.x = player1.x + 15;
-                ball.y = player1.y * 1.5 ;
+                ball.y = player1.y * 1.5;
                 ctx.clearRect(0, 0, 800, 400);
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 0, 800, 400);
@@ -111,8 +135,8 @@ function play() {
             rtol = "left";
             if (ball.y + ball.radius < player2.y || ball.y + ball.radius > player2.y + player2.height) {
                 //Todo: reset ball position
-                ball.x = player2.x - 11;                
-                ball.y = player2.y * 1.5 ;
+                ball.x = player2.x - 11;
+                ball.y = player2.y * 1.5;
                 player1.score += 15;
                 ctx.clearRect(0, 0, 800, 400);
                 ctx.fillStyle = "black";
@@ -129,15 +153,13 @@ function play() {
         if (ttob === 'top') { ball.y += speed / 2 }
         else { ball.y -= speed / 2 }
         //*---------- Finish the game ------------->
-        if (player2.score === 45) {
+        if (player2.score >= max) {
             cancelAnimationFrame(gameFlow);
-            winner = 'player2'
-            gameOver(winner);
+            gameOver(player2Name);
         }
-        if (player1.score === 45) {
+        if (player1.score >= max) {
             cancelAnimationFrame(gameFlow);
-            winner = 'player1'
-            gameOver(winner);
+            gameOver(player1Name);
         }
         draw();
     }
@@ -152,10 +174,8 @@ function gameOver(winner) {
     ctx.fillStyle = "olive";
     // ctx.fillRect(300, 250, 100, 50);
     ctx.fillText("Play Again", 305, 240);
-    requestAnimationFrame(gameOver);
+    // requestAnimationFrame(gameOver);
 }
 
+
 //*------------- The game starts after 1.5 Seconds ------------->
-setTimeout(() => {
-    play();
-}, 1500); 

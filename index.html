@@ -13,16 +13,52 @@
 
         canvas {
             border: 1px solid red;
-            margin-top: 10vh;
+            margin-top: 1vh;
+        }
+
+        form {
+            display: flex;
+            width: 80%;
+            margin: auto;
+            justify-content: space-evenly;
+            line-height: 1.8;
+            font-family: sans-serif;
+        }
+        form input {
+            width: 120%;
+        }
+        #warning{
+            position: relative;
+            display: none;
+            color: red;
+            font-size: 17px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
     </style>
 </head>
 
 <body>
     <main>
+        <h1>Ping Pong Game</h1>
+        <form>
+            <div class="player1">
+                <label for="Player1">Player 1 enter Your Name </label><br />
+                <input type="text" id="player1" />
+            </div>
+            <div class="gameSetting">
+                <label for="maxScore">Enter The Score Limit </label><br />
+                <input type="number" id="maxScore" /> <br />
+                <button id="playBtn">Play</button>
+            </div>
+            <div class="player2">
+                <label for="Player2">Player 2 enter Your Name </label><br />
+                <input type="text" id="player2">
+            </div>
+        </form>
+        <p id="warning">All Field Must be full</p>
         <canvas id="canvas" width="800" height="400"></canvas>
     </main>
-<script src="./index.js"></script>
+    <script src="./index.js"></script>
 </body>
 
 </html>
