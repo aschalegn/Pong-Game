@@ -21,10 +21,10 @@ let board = ctx.fillRect(0, 0, 800, 400);
 let player1 = new Block(2, 150, 5, 100, 0);
 let player2 = new Block(793, 150, 5, 100, 0);
 let ball = new Ball(400, 200, 10, 0, 9 * Math.PI, []);
-let speed = 40;
+let speed = 15;
 let starter = Math.floor((Math.random() * 2) + 1);
-let rtol = '';
-let ttob = '';
+let rtol = '', ttob = '';
+let gameFlow, winner;
 
 //*-------- Define who is starting --------->
 starter === 1 ? ball.x = player1.x + 15 : ball.x = player2.x - 11
@@ -35,6 +35,11 @@ function draw() {
     //*------- Drawing Players ------->
     ctx.fillRect(player1.x, player1.y, player1.width, player1.height);
     ctx.fillRect(player2.x, player2.y, player2.width, player2.height);
+    //*----- players score ----------->
+    ctx.font = "40px Georgia";
+    ctx.fillText(player1.score, 30, 50);
+    ctx.fillText(player2.score, 740, 50);
+
     //*------ Drawing Ball ------>
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.radius, ball.sEngle, ball.eEngle);
@@ -54,53 +59,64 @@ function draw() {
 }
 draw();
 
-//! Movement
+//! Players Movement
+window.addEventListener('keydown', (e) => {
+    //* Player1 movement
+    if (e.keyCode === 87) {
+        if (player1.y > 9) { player1.y -= speed * 2 }
+    }
+    if (e.keyCode === 83) {
+        if (player1.y < 292) { player1.y += speed * 2 }
+    }
+    //* Player2 movement
+    if (e.keyCode === 38) {
+        if (player2.y > 9) { player2.y -= speed * 2 }
+    }
+    if (e.keyCode === 40) {
+        if (player2.y < 292) { player2.y += speed * 2 }
+    }
+    ctx.clearRect(0, 0, 800, 400);
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, 800, 400);
+    draw();
+});
+
+
 function play() {
-    window.addEventListener('keydown', (e) => {
-        //! Player2 movement
-        if (e.keyCode === 38) {
-            if (player2.y > 19) { player2.y -= speed }
-        }
-        if (e.keyCode === 40) {
-            if (player2.y < 292) { player2.y += speed }
-        }
-        //! Player1 movement
-        if (e.keyCode === 87) {
-            if (player1.y > 9) { player1.y -= speed }
-        }
-        if (e.keyCode === 83) {
-            if (player1.y < 292) { player1.y += speed }
-        }
+    gameFlow = window.requestAnimationFrame(play); // take care of refreshing the board smoothly 
+    //*------- ball movement-------- >
+    // gameFlow = setInterval(movementAndScore, 100);
+    function movementAndScore() {
         ctx.clearRect(0, 0, 800, 400);
         ctx.fillStyle = "black";
         ctx.fillRect(0, 0, 800, 400);
-        draw();
-    });
-
-    //*------- ball movement-------- >
-    setInterval(() => {
-        ctx.clearRect((ball.x) - ball.radius, (ball.y) - ball.radius, (ball.radius) * 2, (ball.radius) * 2);
-        ctx.fillStyle = "black";
-        ctx.fillRect((ball.x) - ball.radius, (ball.y) - ball.radius, (ball.radius) * 2, (ball.radius) * 2);
-        //! detect if hit the player bet **Done partialy**
+        //! detect if hit the player bet 
         //*-------------- player1 ------------>
         if (ball.x <= player1.x + 15) {
             ball.x += speed;
             rtol = "right";
-            if (ball.y < player1.y || ball.y > player1.y + player1.height) {
+            if (ball.y + ball.radius < player1.y || ball.y + ball.radius > player1.y + player1.height) {
                 //Todo: reset ball position
                 player2.score += 15;
                 ball.x = player1.x + 15;
+                ball.y = player1.y * 1.5 ;
+                ctx.clearRect(0, 0, 800, 400);
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, 800, 400);
             }
         }
         //*--------- player2 -------->
-        if (ball.x + 11 >= player2.x) {
+        if (ball.x + 11 === player2.x) {
             ball.x -= speed;
             rtol = "left";
-            if (ball.y < player2.y || ball.y > player2.y + player2.height) {
+            if (ball.y + ball.radius < player2.y || ball.y + ball.radius > player2.y + player2.height) {
                 //Todo: reset ball position
+                ball.x = player2.x - 11;                
+                ball.y = player2.y * 1.5 ;
                 player1.score += 15;
-                ball.x = player2.x - 11;
+                ctx.clearRect(0, 0, 800, 400);
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, 800, 400);
             }
         }
         //! continuosly movement rightToLeft
@@ -112,15 +128,34 @@ function play() {
         //! continuosly movement topToBottom
         if (ttob === 'top') { ball.y += speed / 2 }
         else { ball.y -= speed / 2 }
+        //*---------- Finish the game ------------->
+        if (player2.score === 45) {
+            cancelAnimationFrame(gameFlow);
+            winner = 'player2'
+            gameOver(winner);
+        }
+        if (player1.score === 45) {
+            cancelAnimationFrame(gameFlow);
+            winner = 'player1'
+            gameOver(winner);
+        }
         draw();
-    }, 100);
+    }
+    movementAndScore();
 }
 
+function gameOver(winner) {
+    ctx.clearRect(0, 0, 800, 400);
+    ctx.fillStyle = "red";
+    ctx.font = "40px Georgia";
+    ctx.fillText(`is The Winner`, 275, 190);
+    ctx.fillStyle = "olive";
+    // ctx.fillRect(300, 250, 100, 50);
+    ctx.fillText("Play Again", 305, 240);
+    requestAnimationFrame(gameOver);
+}
 
 //*------------- The game starts after 1.5 Seconds ------------->
 setTimeout(() => {
     play();
-}, 1500)
-
-
-
+}, 1500); 
