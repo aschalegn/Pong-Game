@@ -45,7 +45,7 @@ let board = ctx.fillRect(0, 0, 800, 400);
 let player1 = new Block(2, 150, 5, 100, 0);
 let player2 = new Block(793, 150, 5, 100, 0);
 let ball = new Ball(400, 200, 10, 0, 9 * Math.PI, []);
-let speed = 15;
+let speed = 15, steps = 10;
 let starter = Math.floor((Math.random() * 2) + 1);
 let rtol = '', ttob = '';
 let gameFlow;
@@ -120,7 +120,7 @@ function play() {
             rtol = "right";
             if (ball.y + ball.radius < player1.y || ball.y + ball.radius > player1.y + player1.height) {
                 //Todo: reset ball position
-                player2.score += 15;
+                player2.score += steps;
                 ball.x = player1.x + 15;
                 ball.y = player1.y * 1.5;
                 ctx.clearRect(0, 0, 800, 400);
@@ -136,7 +136,7 @@ function play() {
                 //Todo: reset ball position
                 ball.x = player2.x - 11;
                 ball.y = player2.y * 1.5;
-                player1.score += 15;
+                player1.score += steps;
                 ctx.clearRect(0, 0, 800, 400);
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 0, 800, 400);
