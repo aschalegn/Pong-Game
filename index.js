@@ -109,7 +109,6 @@ window.addEventListener('keydown', (e) => {
 function play() {
     gameFlow = window.requestAnimationFrame(play); // take care of refreshing the board smoothly 
     //*------- ball movement-------- >
-    // gameFlow = setInterval(movementAndScore, 100);
     function movementAndScore() {
         ctx.clearRect(0, 0, 800, 400);
         ctx.fillStyle = "black";
