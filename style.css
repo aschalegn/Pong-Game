@@ -1,0 +1,35 @@
+main {
+    text-align: center;
+}
+
+canvas {
+    border: 1px solid red;
+    margin-top: 1vh;
+}
+
+form {
+    display: flex;
+    width: 80%;
+    margin: auto;
+    justify-content: space-evenly;
+    line-height: 1.8;
+    font-family: sans-serif;
+}
+
+form input {
+    width: 120%;
+}
+
+#warning {
+    position: relative;
+    display: none;
+    color: red;
+    font-size: 17px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+@media only screen and (max-width: 800px){
+    form{
+        width: 100%;
+    }
+}
